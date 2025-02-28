@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<          <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -77,8 +77,8 @@
             <h2>Mark Session as Completed</h2>
             <label for="schedule-type">Select Schedule:</label>
             <select id="schedule-type" onchange="toggleScheduleType()">
-                <option value="weekday">Weekend Schedule</option>
-                <option value="weekend">Weekday Schedule</option>
+                <option value="weekday">Weekday Schedule</option>
+                <option value="weekend">Weekend Schedule</option>
             </select>
 
             <label for="time-block">Select Time Block:</label>
@@ -205,54 +205,78 @@
                 return remainingSessions;
             }
 
-            updateTimeBlocks() {
-                const scheduleType = document.getElementById("schedule-type").value;
+            updateRemainingSessionsDisplay() {
+                const remainingSessions = this.displayRemainingSessions();
+                const remainingSessionsList = document.getElementById("remaining-sessions-list");
+                remainingSessionsList.innerHTML = ""; // Clear previous content
+
+                for (let subject in this.weekTracker) {
+                    const li = document.createElement("li");
+                    li.textContent = `${subject}: ${this.weekTracker[subject]} sessions left`;
+                    remainingSessionsList.appendChild(li);
+                }
+            }
+
+            updateTimeBlocks()
+ {
                 const timeBlockSelect = document.getElementById("time-block");
-                timeBlockSelect.innerHTML = ""; // Clear previous options
+                const scheduleType = document.getElementById("schedule-type").value;
+                const schedule = (scheduleType === "weekday") ? this.weekdaySchedule : this.weekendSchedule;
 
-                let schedule = (scheduleType === "weekday") ? this.weekdaySchedule : this.weekendSchedule;
+                // Clear previous options
+                timeBlockSelect.innerHTML = "";
 
-                schedule.forEach(session => {
+                // Add new options based on the selected schedule type
+                for (let session of schedule) {
                     const option = document.createElement("option");
                     option.value = session["Time Block"];
                     option.textContent = session["Time Block"];
                     timeBlockSelect.appendChild(option);
-                });
+                }
+            }
+
+            toggleScheduleType() {
+                // Update the time blocks whenever the schedule type changes
+                this.updateTimeBlocks();
+
+                // Update the remaining sessions display
+                this.updateRemainingSessionsDisplay();
             }
         }
 
         const studyTracker = new StudyTracker();
 
-        function toggleScheduleType() {
+        // Initialize the display for time blocks and remaining sessions
+        window.onload = function() {
             studyTracker.updateTimeBlocks();
-        }
+            studyTracker.updateRemainingSessionsDisplay();
+        };
 
         function markCompleted() {
             const timeBlock = document.getElementById("time-block").value;
             const subject = document.getElementById("subject").value;
             studyTracker.markCompleted(timeBlock, subject);
+
+            // Update the UI to reflect the completed session and remaining sessions
+            studyTracker.updateRemainingSessionsDisplay();
         }
 
         function addNotes() {
             const timeBlock = document.getElementById("time-block").value;
             const notes = document.getElementById("notes").value;
             studyTracker.addNotes(timeBlock, notes);
+
+            // Clear the notes field after adding
+            document.getElementById("notes").value = "";
         }
 
         function displaySchedule() {
-            const schedule = studyTracker.displaySchedule();
-            document.getElementById("schedule-display").textContent = schedule;
-        }
+            const scheduleDisplay = document.getElementById("schedule-display");
+            const scheduleType = document.getElementById("schedule-type").value;
+            const schedule = (scheduleType === "weekday") ? studyTracker.weekdaySchedule : studyTracker.weekendSchedule;
 
-        function displayRemainingSessions() {
-            const remainingSessions = studyTracker.displayRemainingSessions();
-            document.getElementById("remaining-sessions-list").textContent = remainingSessions;
+            scheduleDisplay.textContent = JSON.stringify(schedule, null, 2);
         }
-
-        // Initialize the time blocks on page load
-        window.onload = function() {
-            studyTracker.updateTimeBlocks();
-        };
     </script>
 
 </body>
