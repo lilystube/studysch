@@ -64,26 +64,26 @@
         .subject-progress li {
             padding: 5px 0;
         }
+        select {
+            margin-bottom: 10px;
+        }
     </style>
 </head>
 <body>
 
     <h1>Study Tracker</h1>
     <div class="container">
-        <!-- Mark Session as Completed -->
         <div class="section">
             <h2>Mark Session as Completed</h2>
+            <label for="schedule-type">Select Schedule:</label>
+            <select id="schedule-type" onchange="toggleScheduleType()">
+                <option value="weekday">Weekday Schedule</option>
+                <option value="weekend">Weekend Schedule</option>
+            </select>
+
             <label for="time-block">Select Time Block:</label>
             <select id="time-block">
-                <option value="9:00 - 10:00 AM">9:00 - 10:00 AM</option>
-                <option value="10:00 - 12:00 PM">10:00 - 12:00 PM</option>
-                <option value="12:00 - 12:45 PM">12:00 - 12:45 PM</option>
-                <option value="12:45 - 1:45 PM">12:45 - 1:45 PM</option>
-                <option value="1:45 - 3:15 PM">1:45 - 3:15 PM</option>
-                <option value="3:15 - 3:45 PM">3:15 - 3:45 PM</option>
-                <option value="4:30 - 5:30 PM">4:30 - 5:30 PM</option>
-                <option value="5:30 - 7:30 PM">5:30 - 7:30 PM</option>
-                <option value="7:30 - 8:00 PM">7:30 - 8:00 PM</option>
+                <!-- Time blocks will be populated based on the schedule type -->
             </select>
 
             <label for="subject">Select Subject:</label>
@@ -99,7 +99,6 @@
             <button onclick="markCompleted()">Mark as Completed</button>
         </div>
 
-        <!-- Add Notes Section -->
         <div class="section">
             <h2>Add Notes</h2>
             <label for="notes">Notes for the selected session:</label>
@@ -107,21 +106,12 @@
             <button onclick="addNotes()">Add Notes</button>
         </div>
 
-        <!-- Weekday Schedule Section -->
         <div class="section">
-            <h2>Weekday Schedule</h2>
-            <button onclick="displayWeekdaySchedule()">Display Weekday Schedule</button>
-            <pre id="weekday-schedule-display"></pre>
+            <h2>Current Study Schedule</h2>
+            <button onclick="displaySchedule()">Display Schedule</button>
+            <pre id="schedule-display"></pre>
         </div>
 
-        <!-- Weekend Schedule Section -->
-        <div class="section">
-            <h2>Weekend Schedule</h2>
-            <button onclick="displayWeekendSchedule()">Display Weekend Schedule</button>
-            <pre id="weekend-schedule-display"></pre>
-        </div>
-
-        <!-- Remaining Sessions Progress -->
         <div class="section subject-progress">
             <h2>Remaining Sessions for Each Subject</h2>
             <ul id="remaining-sessions-list">
@@ -154,6 +144,16 @@
                     { "Time Block": "5:30 - 7:30 PM", "Activity": "Blog writing/management", "Subjects": [], "Completed": false, "Notes": "" },
                     { "Time Block": "7:30 - 8:00 PM", "Activity": "Quick review & prep for next week", "Subjects": [], "Completed": false, "Notes": "" }
                 ];
+
+                this.weekendSchedule = [
+                    { "Time Block": "2:00 - 4:00 AM", "Activity": "Past paper practice (Structured + MCQs)", "Subjects": ["Physics", "Chemistry", "Biology"], "Completed": false, "Notes": "" },
+                    { "Time Block": "4:00 - 5:00 AM", "Activity": "Content review (theory & notes)", "Subjects": ["Physics", "Chemistry", "Biology"], "Completed": false, "Notes": "" },
+                    { "Time Block": "6:30 - 7:15 AM", "Activity": "Light content review (videos/notes) (Commute)", "Subjects": ["Math", "Statistics", "English"], "Completed": false, "Notes": "" },
+                    { "Time Block": "12:00 - 1:00 PM", "Activity": "MCQs + Past paper review (Lunch session)", "Subjects": ["Math", "Statistics", "Chemistry", "Biology", "Physics"], "Completed": false, "Notes": "" },
+                    { "Time Block": "5:30 - 6:30 PM", "Activity": "MCQs + Structured Questions (Past Paper Practice)", "Subjects": ["Physics", "Chemistry", "Biology", "Math", "Statistics"], "Completed": false, "Notes": "" },
+                    { "Time Block": "6:30 - 7:30 PM", "Activity": "Final review (weaker topics, notes, key mistakes)", "Subjects": [], "Completed": false, "Notes": "" },
+                    { "Time Block": "7:30 - 8:00 PM", "Activity": "Wind-down / Quick revision (light review)", "Subjects": ["English"], "Completed": false, "Notes": "" }
+                ];
             }
 
             resetWeekly() {
@@ -168,7 +168,7 @@
             }
 
             markCompleted(timeBlock, subject) {
-                let schedules = [...this.weekdaySchedule, ...this.weekendSchedule]; // Merge both weekday and weekend schedules
+                let schedules = (document.getElementById("schedule-type").value === "weekday") ? this.weekdaySchedule : this.weekendSchedule;
                 for (let session of schedules) {
                     if (session["Time Block"] === timeBlock && session["Subjects"].includes(subject)) {
                         session["Completed"] = true;
@@ -182,7 +182,7 @@
             }
 
             addNotes(timeBlock, notes) {
-                let schedules = [...this.weekdaySchedule, ...this.weekendSchedule]; // Merge both weekday and weekend schedules
+                let schedules = (document.getElementById("schedule-type").value === "weekday") ? this.weekdaySchedule : this.weekendSchedule;
                 for (let session of schedules) {
                     if (session["Time Block"] === timeBlock) {
                         session["Notes"] = notes;
@@ -191,12 +191,10 @@
                 }
             }
 
-            displayWeekdaySchedule() {
-                document.getElementById("weekday-schedule-display").textContent = JSON.stringify(this.weekdaySchedule, null, 2);
-            }
-
-            displayWeekendSchedule() {
-                document.getElementById("weekend-schedule-display").textContent = JSON.stringify(this.weekendSchedule, null, 2);
+            displaySchedule() {
+                const scheduleType = document.getElementById("schedule-type").value;
+                const schedule = (scheduleType === "weekday") ? this.weekdaySchedule : this.weekendSchedule;
+                return JSON.stringify(schedule, null, 2);
             }
 
             displayRemainingSessions() {
@@ -206,36 +204,57 @@
                 }
                 return remainingSessions;
             }
+
+            updateTimeBlocks() {
+                const scheduleType = document.getElementById("schedule-type").value;
+                const timeBlockSelect = document.getElementById("time-block");
+                timeBlockSelect.innerHTML = ""; // Clear previous options
+
+                let schedule = (scheduleType === "weekday") ? this.weekdaySchedule : this.weekendSchedule;
+
+                schedule.forEach(session => {
+                    const option = document.createElement("option");
+                    option.value = session["Time Block"];
+                    option.textContent = session["Time Block"];
+                    timeBlockSelect.appendChild(option);
+                });
+            }
         }
 
-        const tracker = new StudyTracker();
+        const studyTracker = new StudyTracker();
+
+        function toggleScheduleType() {
+            studyTracker.updateTimeBlocks();
+        }
 
         function markCompleted() {
             const timeBlock = document.getElementById("time-block").value;
             const subject = document.getElementById("subject").value;
-            tracker.markCompleted(timeBlock, subject);
-            displayRemainingSessions();
+            studyTracker.markCompleted(timeBlock, subject);
         }
 
         function addNotes() {
             const timeBlock = document.getElementById("time-block").value;
             const notes = document.getElementById("notes").value;
-            tracker.addNotes(timeBlock, notes);
+            studyTracker.addNotes(timeBlock, notes);
+        }
+
+        function displaySchedule() {
+            const schedule = studyTracker.displaySchedule();
+            document.getElementById("schedule-display").textContent = schedule;
         }
 
         function displayRemainingSessions() {
-            const remainingSessionsList = document.getElementById("remaining-sessions-list");
-            remainingSessionsList.innerHTML = ""; // Clear existing content
-            const remainingSessions = tracker.displayRemainingSessions().split("\n");
-
-            remainingSessions.forEach(session => {
-                if (session) {
-                    const li = document.createElement("li");
-                    li.textContent = session;
-                    remainingSessionsList.appendChild(li);
-                }
-            });
+            const remainingSessions = studyTracker.displayRemainingSessions();
+            document.getElementById("remaining-sessions-list").textContent = remainingSessions;
         }
+
+        // Initialize the time blocks on page load
+        window.onload = function() {
+            studyTracker.updateTimeBlocks();
+        };
     </script>
+
 </body>
 </html>
+
