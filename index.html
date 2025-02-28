@@ -10,11 +10,10 @@
             padding: 20px;
             max-width: 900px;
             margin: auto;
-            background-color: #fce4ec; /* Light pink background */
+            background-color: #f4f4f9;
         }
         h1 {
             text-align: center;
-            color: #d81b60; /* Deep pink for header */
         }
         .container {
             background-color: #fff;
@@ -27,14 +26,14 @@
         }
         button {
             padding: 10px 20px;
-            background-color: #d81b60; /* Pink button */
+            background-color: #4CAF50;
             color: white;
             border: none;
             border-radius: 5px;
             cursor: pointer;
         }
         button:hover {
-            background-color: #c2185b; /* Darker pink when hovering */
+            background-color: #45a049;
         }
         textarea {
             width: 100%;
@@ -42,15 +41,26 @@
             font-size: 16px;
             margin-top: 10px;
             resize: vertical;
-            border: 1px solid #d81b60; /* Pink border for textarea */
         }
         pre {
-            background-color: #f8bbd0; /* Light pink background for preformatted text */
+            background-color: #e8e8e8;
             padding: 10px;
             border-radius: 5px;
             white-space: pre-wrap;
             word-wrap: break-word;
             margin-top: 10px;
+        }
+        .subject-progress {
+            background-color: #f1f1f1;
+            padding: 10px;
+            border-radius: 8px;
+        }
+        .subject-progress ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        .subject-progress li {
+            padding: 5px 0;
         }
     </style>
 </head>
@@ -97,6 +107,13 @@
             <h2>Current Study Schedule</h2>
             <button onclick="displaySchedule()">Display Schedule</button>
             <pre id="schedule-display"></pre>
+        </div>
+
+        <div class="section subject-progress">
+            <h2>Remaining Sessions for Each Subject</h2>
+            <ul id="remaining-sessions-list">
+                <!-- Remaining sessions will be displayed here -->
+            </ul>
         </div>
     </div>
 
@@ -173,9 +190,17 @@
 
             displaySchedule() {
                 return JSON.stringify({
-                    "Weekday": this.weekdaySchedule,
-                    "Weekend": this.weekendSchedule
+                    "Weekday Schedule": this.weekdaySchedule,
+                    "Weekend Schedule": this.weekendSchedule
                 }, null, 2);
+            }
+
+            displayRemainingSessions() {
+                let remainingSessions = "";
+                for (let subject in this.weekTracker) {
+                    remainingSessions += `${subject}: ${this.weekTracker[subject]} sessions left\n`;
+                }
+                return remainingSessions;
             }
         }
 
@@ -185,6 +210,7 @@
             const timeBlock = document.getElementById("time-block").value;
             const subject = document.getElementById("subject").value;
             tracker.markCompleted(timeBlock, subject);
+            displayRemainingSessions();
         }
 
         function addNotes() {
@@ -194,9 +220,15 @@
         }
 
         function displaySchedule() {
-            const scheduleDisplay = document.getElementById("schedule-display");
-            scheduleDisplay.textContent = tracker.displaySchedule();
+            document.getElementById("schedule-display").textContent = tracker.displaySchedule();
+        }
+
+        function displayRemainingSessions() {
+            const remainingSessions = tracker.displayRemainingSessions();
+            const remainingSessionsList = document.getElementById("remaining-sessions-list");
+            remainingSessionsList.innerHTML = remainingSessions.split('\n').map(session => `<li>${session}</li>`).join('');
         }
     </script>
 </body>
 </html>
+
