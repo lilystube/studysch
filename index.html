@@ -34,7 +34,7 @@
             cursor: pointer;
         }
         button:hover {
-            background-color: #d81b60;
+            background-color: #c2185b;
         }
         textarea {
             width: 100%;
@@ -226,11 +226,18 @@
         }
 
         function displayRemainingSessions() {
-            const remainingSessions = tracker.displayRemainingSessions();
             const remainingSessionsList = document.getElementById("remaining-sessions-list");
-            remainingSessionsList.innerHTML = remainingSessions.split('\n').map(session => `<li>${session}</li>`).join('');
+            remainingSessionsList.innerHTML = ""; // Clear existing content
+            const remainingSessions = tracker.displayRemainingSessions().split("\n");
+
+            remainingSessions.forEach(session => {
+                if (session) {
+                    const li = document.createElement("li");
+                    li.textContent = session;
+                    remainingSessionsList.appendChild(li);
+                }
+            });
         }
     </script>
 </body>
 </html>
-
