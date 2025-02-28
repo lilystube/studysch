@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Study Tracker</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            max-width: 900px;
+            margin: auto;
+            background-color: #f4f4f9;
+        }
+        h1 {
+            text-align: center;
+        }
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        .section {
+            margin-bottom: 20px;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        textarea {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            margin-top: 10px;
+            resize: vertical;
+        }
+        pre {
+            background-color: #e8e8e8;
+            padding: 10px;
+            border-radius: 5px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Study Tracker</h1>
+    <div class="container">
+        <div class="section">
+            <h2>Mark Session as Completed</h2>
+            <label for="time-block">Select Time Block:</label>
+            <select id="time-block">
+                <option value="9:00 - 10:00 AM">9:00 - 10:00 AM</option>
+                <option value="10:00 - 12:00 PM">10:00 - 12:00 PM</option>
+                <option value="12:00 - 12:45 PM">12:00 - 12:45 PM</option>
+                <option value="12:45 - 1:45 PM">12:45 - 1:45 PM</option>
+                <option value="1:45 - 3:15 PM">1:45 - 3:15 PM</option>
+                <option value="3:15 - 3:45 PM">3:15 - 3:45 PM</option>
+                <option value="4:30 - 5:30 PM">4:30 - 5:30 PM</option>
+                <option value="5:30 - 7:30 PM">5:30 - 7:30 PM</option>
+                <option value="7:30 - 8:00 PM">7:30 - 8:00 PM</option>
+            </select>
+
+            <label for="subject">Select Subject:</label>
+            <select id="subject">
+                <option value="Physics">Physics</option>
+                <option value="Chemistry">Chemistry</option>
+                <option value="Biology">Biology</option>
+                <option value="Math">Math</option>
+                <option value="Statistics">Statistics</option>
+                <option value="English">English</option>
+            </select>
+
+            <button onclick="markCompleted()">Mark as Completed</button>
+        </div>
+
+        <div class="section">
+            <h2>Add Notes</h2>
+            <label for="notes">Notes for the selected session:</label>
+            <textarea id="notes" rows="4"></textarea>
+            <button onclick="addNotes()">Add Notes</button>
+        </div>
+
+        <div class="section">
+            <h2>Current Study Schedule</h2>
+            <button onclick="displaySchedule()">Display Schedule</button>
+            <pre id="schedule-display"></pre>
+        </div>
+    </div>
+
+    <script>
+        class StudyTracker {
+            constructor() {
+                this.sessions = [];
+                this.weekTracker = {};
+                this.weekdaySchedule = [];
+                this.weekendSchedule = [];
+                this.resetDaily();
+                this.resetWeekly();
+            }
+
+            resetDaily() {
+                this.weekdaySchedule = [
+                    { "Time Block": "9:00 - 10:00 AM", "Activity": "Structured Qs / Past Mistakes Review", "Subjects": ["Physics", "Chemistry", "Biology"], "Completed": false, "Notes": "" },
+                    { "Time Block": "10:00 - 12:00 PM", "Activity": "MCQs + Structured Questions (Past Paper)", "Subjects": ["Math", "Statistics", "Chemistry", "Biology"], "Completed": false, "Notes": "" },
+                    { "Time Block": "12:00 - 12:45 PM", "Activity": "Break (Chill / Relax)", "Subjects": [], "Completed": false, "Notes": "" },
+                    { "Time Block": "12:45 - 1:45 PM", "Activity": "Light content review (Videos/Notes)", "Subjects": ["Physics", "Chemistry", "Biology"], "Completed": false, "Notes": "" },
+                    { "Time Block": "1:45 - 3:15 PM", "Activity": "Topical past paper questions (Save My Exams)", "Subjects": ["Physics", "Chemistry", "Biology"], "Completed": false, "Notes": "" },
+                    { "Time Block": "3:15 - 3:45 PM", "Activity": "Check questions & write notes", "Subjects": [], "Completed": false, "Notes": "" },
+                    { "Time Block": "3:45 - 4:30 PM", "Activity": "Break (Chill)", "Subjects": [], "Completed": false, "Notes": "" },
+                    { "Time Block": "4:30 - 5:30 PM", "Activity": "Final structured practice session", "Subjects": ["Math", "Stats", "Physics"], "Completed": false, "Notes": "" },
+                    { "Time Block": "5:30 - 7:30 PM", "Activity": "Blog writing/management", "Subjects": [], "Completed": false, "Notes": "" },
+                    { "Time Block": "7:30 - 8:00 PM", "Activity": "Quick review & prep for next week", "Subjects": [], "Completed": false, "Notes": "" }
+                ];
+
+                this.weekendSchedule = [
+                    { "Time Block": "2:00 - 4:00 AM", "Activity": "Past paper practice (Structured + MCQs)", "Subjects": ["Physics", "Chemistry", "Biology"], "Completed": false, "Notes": "" },
+                    { "Time Block": "4:00 - 5:00 AM", "Activity": "Content review (theory & notes)", "Subjects": ["Physics", "Chemistry", "Biology"], "Completed": false, "Notes": "" },
+                    { "Time Block": "6:30 - 7:15 AM", "Activity": "Light content review (videos/notes) (Commute)", "Subjects": ["Math", "Statistics", "English"], "Completed": false, "Notes": "" },
+                    { "Time Block": "12:00 - 1:00 PM", "Activity": "MCQs + Past paper review (Lunch session)", "Subjects": ["Math", "Statistics", "Chemistry", "Biology", "Physics"], "Completed": false, "Notes": "" },
+                    { "Time Block": "5:30 - 6:30 PM", "Activity": "MCQs + Structured Questions (Past Paper Practice)", "Subjects": ["Physics", "Chemistry", "Biology", "Math", "Statistics"], "Completed": false, "Notes": "" },
+                    { "Time Block": "6:30 - 7:30 PM", "Activity": "Final review (weaker topics, notes, key mistakes)", "Subjects": [], "Completed": false, "Notes": "" },
+                    { "Time Block": "7:30 - 8:00 PM", "Activity": "Wind-down / Quick revision (light review)", "Subjects": ["English"], "Completed": false, "Notes": "" }
+                ];
+            }
+
+            resetWeekly() {
+                this.weekTracker = {
+                    "Physics": 5,
+                    "Chemistry": 5,
+                    "Biology": 5,
+                    "Math": 3,
+                    "Statistics": 3,
+                    "English": 1
+                };
+            }
+
+            markCompleted(timeBlock, subject) {
+                let schedules = [...this.weekdaySchedule, ...this.weekendSchedule]; // Merge both weekday and weekend schedules
+                for (let session of schedules) {
+                    if (session["Time Block"] === timeBlock && session["Subjects"].includes(subject)) {
+                        session["Completed"] = true;
+                        session["Subjects"] = [subject]; // Only mark the current subject
+                        if (this.weekTracker[subject] > 0) {
+                            this.weekTracker[subject]--;
+                        }
+                        break;
+                    }
+                }
+            }
+
+            addNotes(timeBlock, notes) {
+                let schedules = [...this.weekdaySchedule, ...this.weekendSchedule]; // Merge both weekday and weekend schedules
+                for (let session of schedules) {
+                    if (session["Time Block"] === timeBlock) {
+                        session["Notes"] = notes;
+                        break;
+                    }
+                }
+            }
+
+            displaySchedule() {
+                return JSON.stringify({
+                    "Weekday
