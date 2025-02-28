@@ -5,101 +5,210 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Study Tracker</title>
     <style>
+        /* Reset some basic styles */
+        body, h1, h2, table, th, td, input, textarea {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
         body {
             font-family: Arial, sans-serif;
-            padding: 20px;
-            max-width: 900px;
-            margin: auto;
-            background-color: #f4f4f9;
+            background-color: #fce4ec; /* Light pink background */
+            color: #4a1c36; /* Dark pink text */
+            line-height: 1.6;
         }
-        h1 {
+
+        header {
             text-align: center;
-        }
-        .container {
-            background-color: #fff;
+            background-color: #ec407a; /* Bright pink header */
+            color: white;
             padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
         }
-        .section {
+
+        header h1 {
+            font-size: 2.5rem;
+        }
+
+        header p {
+            font-size: 1.2rem;
+        }
+
+        section {
+            margin: 20px auto;
+            width: 80%;
+            max-width: 1000px;
+        }
+
+        h2 {
+            color: #ec407a;
+            text-align: center;
             margin-bottom: 20px;
         }
-        button {
-            padding: 10px 20px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 5px;
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+        }
+
+        th, td {
+            padding: 10px;
+            border: 1px solid #ec407a;
+            text-align: center;
+        }
+
+        th {
+            background-color: #f8bbd0; /* Light pink for table headers */
+            color: #4a1c36;
+        }
+
+        td {
+            background-color: #ffffff;
+            color: #4a1c36;
+        }
+
+        input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
             cursor: pointer;
         }
-        button:hover {
-            background-color: #45a049;
-        }
+
         textarea {
-            width: 100%;
-            padding: 10px;
-            font-size: 16px;
-            margin-top: 10px;
-            resize: vertical;
+            width: 90%;
+            height: 60px;
+            padding: 5px;
+            border: 1px solid #ec407a;
+            background-color: #fce4ec;
+            resize: none;
+            margin-top: 5px;
+            color: #4a1c36;
         }
-        pre {
-            background-color: #e8e8e8;
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        li {
+            background-color: #f8bbd0;
+            margin: 10px 0;
             padding: 10px;
             border-radius: 5px;
-            white-space: pre-wrap;
-            word-wrap: break-word;
-            margin-top: 10px;
         }
+
+        footer {
+            text-align: center;
+            padding: 10px;
+            background-color: #ec407a;
+            color: white;
+            margin-top: 30px;
+        }
+
     </style>
 </head>
 <body>
+    <header>
+        <h1>Study Tracker</h1>
+        <p>Track your study sessions and progress for the week!</p>
+    </header>
 
-    <h1>Study Tracker</h1>
-    <div class="container">
-        <div class="section">
-            <h2>Mark Session as Completed</h2>
-            <label for="time-block">Select Time Block:</label>
-            <select id="time-block">
-                <option value="9:00 - 10:00 AM">9:00 - 10:00 AM</option>
-                <option value="10:00 - 12:00 PM">10:00 - 12:00 PM</option>
-                <option value="12:00 - 12:45 PM">12:00 - 12:45 PM</option>
-                <option value="12:45 - 1:45 PM">12:45 - 1:45 PM</option>
-                <option value="1:45 - 3:15 PM">1:45 - 3:15 PM</option>
-                <option value="3:15 - 3:45 PM">3:15 - 3:45 PM</option>
-                <option value="4:30 - 5:30 PM">4:30 - 5:30 PM</option>
-                <option value="5:30 - 7:30 PM">5:30 - 7:30 PM</option>
-                <option value="7:30 - 8:00 PM">7:30 - 8:00 PM</option>
-            </select>
+    <section id="schedule">
+        <h2>📆 Weekday Schedule (Monday - Friday)</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Time Block</th>
+                    <th>Activity</th>
+                    <th>Subjects</th>
+                    <th>Completed</th>
+                    <th>Notes</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>9:00 - 10:00 AM</td>
+                    <td>Structured Qs / Past Mistakes Review</td>
+                    <td>Physics, Chemistry, Biology</td>
+                    <td><input type="checkbox" id="session1"></td>
+                    <td><textarea id="notes1" placeholder="Enter notes..."></textarea></td>
+                </tr>
+                <tr>
+                    <td>10:00 - 12:00 PM</td>
+                    <td>MCQs + Structured Questions (Past Paper)</td>
+                    <td>Math (Sat), Statistics (Sun), Chemistry (Sat), Biology (Sun)</td>
+                    <td><input type="checkbox" id="session2"></td>
+                    <td><textarea id="notes2" placeholder="Enter notes..."></textarea></td>
+                </tr>
+                <tr>
+                    <td>12:00 - 12:45 PM</td>
+                    <td>Break (Chill / Relax)</td>
+                    <td>-</td>
+                    <td><input type="checkbox" id="session3"></td>
+                    <td><textarea id="notes3" placeholder="Enter notes..."></textarea></td>
+                </tr>
+                <tr>
+                    <td>12:45 - 1:45 PM</td>
+                    <td>Light content review (Videos/Notes)</td>
+                    <td>Physics, Chemistry, Biology</td>
+                    <td><input type="checkbox" id="session4"></td>
+                    <td><textarea id="notes4" placeholder="Enter notes..."></textarea></td>
+                </tr>
+                <tr>
+                    <td>1:45 - 3:15 PM</td>
+                    <td>Topical past paper questions (Save My Exams)</td>
+                    <td>Physics, Chemistry, Biology</td>
+                    <td><input type="checkbox" id="session5"></td>
+                    <td><textarea id="notes5" placeholder="Enter notes..."></textarea></td>
+                </tr>
+                <!-- Add additional rows for the remaining sessions -->
+            </tbody>
+        </table>
+    </section>
 
-            <label for="subject">Select Subject:</label>
-            <select id="subject">
-                <option value="Physics">Physics</option>
-                <option value="Chemistry">Chemistry</option>
-                <option value="Biology">Biology</option>
-                <option value="Math">Math</option>
-                <option value="Statistics">Statistics</option>
-                <option value="English">English</option>
-            </select>
+    <section id="weekend-schedule">
+        <h2>📆 Weekend Schedule (Saturday & Sunday)</h2>
+        <!-- Add a similar table for weekend schedule -->
+        <table>
+            <thead>
+                <tr>
+                    <th>Time Block</th>
+                    <th>Activity</th>
+                    <th>Subjects (Rotation)</th>
+                    <th>Completed</th>
+                    <th>Notes</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>2:00 - 4:00 AM</td>
+                    <td>Past paper practice (Structured + MCQs)</td>
+                    <td>Physics (2 days), Chemistry (1 day), Biology (2 days)</td>
+                    <td><input type="checkbox" id="weekend-session1"></td>
+                    <td><textarea id="weekend-notes1" placeholder="Enter notes..."></textarea></td>
+                </tr>
+                <!-- Add more rows as needed -->
+            </tbody>
+        </table>
+    </section>
 
-            <button onclick="markCompleted()">Mark as Completed</button>
-        </div>
+    <section id="subject-tracker">
+        <h2>📊 Weekly Subject Tracker</h2>
+        <ul>
+            <li>Physics: <span id="physics-tracker">5</span> sessions remaining</li>
+            <li>Chemistry: <span id="chemistry-tracker">5</span> sessions remaining</li>
+            <li>Biology: <span id="biology-tracker">5</span> sessions remaining</li>
+            <li>Math: <span id="math-tracker">3</span> sessions remaining</li>
+            <li>Statistics: <span id="statistics-tracker">3</span> sessions remaining</li>
+            <li>English: <span id="english-tracker">1</span> session remaining</li>
+        </ul>
+    </section>
 
-        <div class="section">
-            <h2>Add Notes</h2>
-            <label for="notes">Notes for the selected session:</label>
-            <textarea id="notes" rows="4"></textarea>
-            <button onclick="addNotes()">Add Notes</button>
-        </div>
+    <footer>
+        <p>Track your study sessions and stay on top of your goals!</p>
+    </footer>
 
-        <div class="section">
-            <h2>Current Study Schedule</h2>
-            <button onclick="displaySchedule()">Display Schedule</button>
-            <pre id="schedule-display"></pre>
-        </div>
-    </div>
-
-    <script>
-        class StudyTracker {
+    <script> class StudyTracker {
             constructor() {
                 this.sessions = [];
                 this.weekTracker = {};
@@ -171,4 +280,7 @@
 
             displaySchedule() {
                 return JSON.stringify({
-                    "Weekday
+                    "Weekday"}
+                        </script>
+</body>
+</html>
